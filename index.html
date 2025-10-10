@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Number Manager</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+      color: #ffffff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite;
+      z-index: -1;
+    }
+    
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    .header h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, #00d4ff, #ff00ff, #00ff88);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      color: #a0a0a0;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .phone-display {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .phone-number {
+      font-family: 'Orbitron', monospace;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #00d4ff;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+      margin-bottom: 1rem;
+      letter-spacing: 3px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .phone-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .info-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .info-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .info-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+    }
+    
+    .info-label {
+      font-size: 0.9rem;
+      color: #a0a0a0;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .info-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #00ff88;
+    }
+    
+    .input-section {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .number-input {
+      flex: 1;
+      min-width: 300px;
+      padding: 1rem 1.5rem;
+      font-size: 1.2rem;
+      font-family: 'Orbitron', monospace;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(0, 212, 255, 0.3);
+      border-radius: 15px;
+      color: #ffffff;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .number-input:focus {
+      border-color: #00d4ff;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .number-input::placeholder {
+      color: #666;
+    }
+    
+    .update-btn {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-family: 'Orbitron', monospace;
+      font-weight: 600;
+      background: linear-gradient(45deg, #00d4ff, #ff00ff);
+      border: none;
+      border-radius: 15px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .update-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+    }
+    
+    .update-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .update-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .update-btn:hover::before {
+      left: 100%;
+    }
+    
+    .status {
+      margin: 1rem 0;
+      padding: 1.5rem;
+      border-radius: 15px;
+      font-weight: 500;
+      text-align: center;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .status.success {
+      background: linear-gradient(45deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+      border: 1px solid rgba(0, 255, 136, 0.5);
+      color: #00ff88;
+    }
+    
+    .status.error {
+      background: linear-gradient(45deg, rgba(255, 0, 100, 0.2), rgba(255, 0, 100, 0.1));
+      border: 1px solid rgba(255, 0, 100, 0.5);
+      color: #ff0066;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0, 212, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #00d4ff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00d4ff, #00ff88);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: progressShimmer 2s infinite;
+    }
+    
+    @keyframes progressShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .phone-number {
+        font-size: 2.5rem;
+      }
+      
+      .input-section {
+        flex-direction: column;
+      }
+      
+      .number-input {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Contact Number Manager</h1>
+      <p class="subtitle">Advanced Digital Communication Interface</p>
+    </div>
+    
+    <div class="card">
+      <div class="phone-display">
+        <div class="phone-icon">📱</div>
+        <div id="phone" class="phone-number">Loading...</div>
+      </div>
+      
+      <div class="info-panel">
+        <div class="info-item">
+          <div class="info-label">Updates Used</div>
+          <div id="updatesUsed" class="info-value">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Max Updates</div>
+          <div id="maxUpdates" class="info-value">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Last Updated</div>
+          <div id="lastUpdated" class="info-value">-</div>
+        </div>
+      </div>
+      
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+      </div>
+      
+      <div class="input-section">
+        <input type="text" id="newNumber" class="number-input" placeholder="Enter new contact number">
+        <button onclick="updateNumber()" class="update-btn">Update</button>
+      </div>
+      
+      <div id="status"></div>
+    </div>
+  </div>
+
+<script>
+const UID = 'b3855f11-88dd-4b4e-9fc3-ea35f45e50fb';
+const BASE_URL = 'http://127.0.0.1:8000/api/v1/data';
+
+async function fetchNumber() {
+  try {
+    // Show loading state
+    document.getElementById('phone').innerHTML = '<div class="loading"></div>';
+    document.getElementById('updatesUsed').textContent = '-';
+    document.getElementById('maxUpdates').textContent = '-';
+    document.getElementById('lastUpdated').textContent = '-';
+    
+    const res = await fetch(`${BASE_URL}/${UID}`);
+    const json = await res.json();
+    
+    if (res.ok) {
+      const number = json.data.number;
+      document.getElementById('phone').textContent = number;
+      
+      // Update info panels
+      document.getElementById('updatesUsed').textContent = json.limit_counter;
+      document.getElementById('maxUpdates').textContent = json.max_updates;
+      document.getElementById('lastUpdated').textContent = new Date(json.last_updated).toLocaleDateString();
+      
+      // Update progress bar
+      const progressPercentage = (json.limit_counter / json.max_updates) * 100;
+      document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+      
+      // Clear any previous status
+      document.getElementById('status').innerHTML = '';
+    } else {
+      throw new Error(json.detail || 'Failed to fetch data');
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('phone').textContent = "⚠️ Error";
+    document.getElementById('updatesUsed').textContent = 'Error';
+    document.getElementById('maxUpdates').textContent = 'Error';
+    document.getElementById('lastUpdated').textContent = 'Error';
+    showStatus('Error: ' + err.message, 'error');
+  }
+}
+
+async function updateNumber() {
+  const newNumber = document.getElementById('newNumber').value.trim();
+  if (!newNumber) {
+    showStatus('Please enter a number', 'error');
+    return;
+  }
+
+  // Show loading state on button
+  const button = document.querySelector('.update-btn');
+  const originalText = button.textContent;
+  button.innerHTML = '<div class="loading"></div>';
+  button.disabled = true;
+
+  try {
+    const res = await fetch(`${BASE_URL}/${UID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: { number: newNumber } })
+    });
+
+    const json = await res.json();
+    
+    if (res.ok) {
+      showStatus(`✅ Number updated successfully! Updates used: ${json.limit_counter}/${json.max_updates}`, 'success');
+      fetchNumber();
+      document.getElementById('newNumber').value = '';
+    } else {
+      throw new Error(json.detail || 'Failed to update number');
+    }
+  } catch (err) {
+    console.error(err);
+    showStatus('❌ Error: ' + err.message, 'error');
+  } finally {
+    // Restore button
+    button.textContent = originalText;
+    button.disabled = false;
+  }
+}
+
+function showStatus(message, type) {
+  const statusDiv = document.getElementById('status');
+  statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+  
+  // Auto-hide success messages after 3 seconds
+  if (type === 'success') {
+    setTimeout(() => {
+      statusDiv.innerHTML = '';
+    }, 3000);
+  }
+}
+
+// Initial load
+fetchNumber();
+</script>
+
+
+</body>
+</html>
